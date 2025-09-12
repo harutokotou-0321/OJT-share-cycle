@@ -16,6 +16,17 @@ OJT用のシェアサイクル需要予測・最適化プロジェクトを管�
 - requirements.txt: pythonライブラリを管理するファイル
 
 ## ローカル環境のセットアップ
+仮想環境を構築する
+```
+python3 -m venv venv
+source ./venv/bin/activate
+```
+
+pip3を使用する場合, リポジトリのターミナル上で以下のコマンドを実行する
+```
+pip3 install -U pip
+pip3 install -r requirements.txt
+```
 
 ## 実行
 

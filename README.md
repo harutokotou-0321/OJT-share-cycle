@@ -14,13 +14,13 @@ OJT用のシェアサイクル需要予測・最適化プロジェクトを管�
 ## リポジトリ構成
 ```
 .
-├── config →yaml/json/
-│   ├── default
-│   └── experiment →defaultから変更したもの
 ├── common_data/
 │   ├── station_information.json
 │   ├── station_status.json
 │   └── weather.csv
+├── config →yaml/json/
+│   ├── default
+│   └── experiment →defaultから変更したもの
 ├── forecasting/
 │   └── modeling.py
 ├── log_setter

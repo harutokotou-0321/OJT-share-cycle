@@ -23,20 +23,20 @@ def static_preprocessing(df):
 
     df = df[df["address"].str.contains("東京都", na=False)]
     df = df[df["address"].str.contains("区", na=False)]
-    df['ward'] = df['address'].str.extract(r'東京都(.+?)区', expand=False)
-    df["ward_count"] = df['ward'].value_counts()
+    df["ward"] = df["address"].str.extract(r"東京都(.+?)区", expand=False)
+    df["ward_count"] = df["ward"].value_counts()
 
     df["vehicle_capacity_numeric"] = pd.to_numeric(
         df["vehicle_capacity"], errors="coerce"
     )
 
     data = {
-        'ward': [
-            '千代田', '中央', '港', '新宿', '文京', '台東', '墨田', '江東',
-            '品川', '目黒', '大田', '世田谷', '渋谷', '中野', '杉並', '豊島',
-            '北', '荒川', '板橋', '練馬', '足立', '葛飾', '江戸川'
+        "ward": [
+            "千代田", "中央", "港", "新宿", "文京", "台東", "墨田", "江東",
+            "品川", "目黒", "大田", "世田谷", "渋谷", "中野", "杉並", "豊島",
+            "北", "荒川", "板橋", "練馬", "足立", "葛飾", "江戸川"
         ],
-        'area_km2': [
+        "area_km2": [
             11.66, 10.09, 20.37, 18.22, 11.29, 10.11, 27.77, 40.16,
             22.84, 14.67, 60.66, 58.25, 15.11, 15.59, 34.02, 13.01,
             20.59, 10.20, 32.22, 48.07, 53.25, 34.80, 49.90
@@ -45,20 +45,20 @@ def static_preprocessing(df):
     ward_area_df = pd.DataFrame(data)
 
     ward_counts_df = df["ward_count"].reset_index()
-    ward_counts_df.columns = ['ward', 'station_count']
+    ward_counts_df.columns = ["ward", "station_count"]
     ward_counts_with_area = pd.merge(
-        ward_counts_df, ward_area_df, on='ward', how='left'
+        ward_counts_df, ward_area_df, on="ward", how="left"
     )
 
-    ward_counts_with_area['station_density'] = (
-        ward_counts_with_area['station_count'] / ward_counts_with_area['area_km2']
+    ward_counts_with_area["station_density"] = (
+        ward_counts_with_area["station_count"] / ward_counts_with_area["area_km2"]
     )
 
-    bins = [0, 2.0, 4.0, ward_counts_with_area['station_density'].max()]
+    bins = [0, 2.0, 4.0, ward_counts_with_area["station_density"].max()]
     labels = ["0", "1", "2"]
 
-    ward_counts_with_area['density_category_custom'] = pd.cut(
-        ward_counts_with_area['station_density'],
+    ward_counts_with_area["density_category_custom"] = pd.cut(
+        ward_counts_with_area["station_density"],
         bins=bins,
         labels=labels,
         right=True,
@@ -86,19 +86,20 @@ def dynamic_preprocessing(df):
     """動的データ前処理関数"""
     df = json_data_load("../../common_data/dynamic.json")
 
-    df["last_reported_datetime"] = pd.to_datetime(df["last_reported"], unit="s")
+    df["last_reported_datetime"] = pd.to_datetime(
+        df["last_reported"], unit="s")
 
     columns_to_drop = [
-        'vehicle_docks_available',
-        'vehicle_types_available',
-        'last_reported'
+        "vehicle_docks_available",
+        "vehicle_types_available",
+        "last_reported"
     ]
     df = df.drop(columns=columns_to_drop)
 
-    df['month'] = df['last_reported_datetime'].dt.month
-    df['date'] = df['last_reported_datetime'].dt.day
-    df['hours'] = df['last_reported_datetime'].dt.hour
-    df = df.drop(columns=['last_reported_datetime'])
+    df["month"] = df["last_reported_datetime"].dt.month
+    df["date"] = df["last_reported_datetime"].dt.day
+    df["hours"] = df["last_reported_datetime"].dt.hour
+    df = df.drop(columns=["last_reported_datetime"])
 
     return df
 
@@ -106,42 +107,42 @@ def dynamic_preprocessing(df):
 def weather_preprocessing(df):
     """気象データ前処理関数"""
     df.columns = [
-        "_".join([str(c) for c in col if str(c) != 'nan']).strip()
+        "_".join([str(c) for c in col if str(c) != "nan"]).strip()
         for col in df.columns.values
     ]
 
     cleaned_columns = []
     for col in df.columns:
-        cleaned_columns.append(col.split('_', 1)[0])
+        cleaned_columns.append(col.split("_", 1)[0])
 
     japanese_to_english_map = {
-        '年月日時': 'DateTime',
-        '降水量(mm)': 'Precipitation(mm)',
-        '気温(℃)': 'Temperature(℃)',
-        '風速(m/s)': 'WindSpeed(m/s)',
-        '風向': 'WindDirection',
-        '天気': 'Weather'
+        "年月日時": "DateTime",
+        "降水量(mm)": "Precipitation(mm)",
+        "気温(℃)": "Temperature(℃)",
+        "風速(m/s)": "WindSpeed(m/s)",
+        "風向": "WindDirection",
+        "天気": "Weather"
     }
     df.columns = [
         japanese_to_english_map.get(col, col) for col in cleaned_columns
     ]
 
     wind_direction_map = {
-        '北': 0, '北北東': 22.5, '北東': 45, '東北東': 67.5,
-        '東': 90, '東南東': 112.5, '南東': 135, '南南東': 157.5,
-        '南': 180, '南南西': 202.5, '南西': 225, '西南西': 247.5,
-        '西': 270, '西北西': 292.5, '北西': 315, '北北西': 337.5,
-        '静穏': np.nan
+        "北": 0, "北北東": 22.5, "北東": 45, "東北東": 67.5,
+        "東": 90, "東南東": 112.5, "南東": 135, "南南東": 157.5,
+        "南": 180, "南南西": 202.5, "南西": 225, "西南西": 247.5,
+        "西": 270, "西北西": 292.5, "北西": 315, "北北西": 337.5,
+        "静穏": np.nan
     }
-    df['WindDirection'] = df['WindDirection'].map(wind_direction_map)
+    df["WindDirection"] = df["WindDirection"].map(wind_direction_map)
 
     df["Weather"] = df.apply(fill_weather_code, axis=1)
 
-    df['DateTime'] = pd.to_datetime(df['DateTime'])
-    df['month'] = df['DateTime'].dt.month
-    df['date'] = df['DateTime'].dt.day
-    df['hours'] = df['DateTime'].dt.hour
-    df = df.drop(columns=['DateTime'])
+    df["DateTime"] = pd.to_datetime(df["DateTime"])
+    df["month"] = df["DateTime"].dt.month
+    df["date"] = df["DateTime"].dt.day
+    df["hours"] = df["DateTime"].dt.hour
+    df = df.drop(columns=["DateTime"])
 
     return df
 

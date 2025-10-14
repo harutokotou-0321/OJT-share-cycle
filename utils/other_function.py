@@ -1,3 +1,4 @@
+import re
 import json
 
 import numpy as np
@@ -37,7 +38,7 @@ def fill_weather_code(row):
 def json_data_load(json_path):
     """jsonファイルを読み込む関数"""
 
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         df = json.load(f)
     
     df = df["data"]["stations"]
@@ -56,3 +57,13 @@ def categorize_demand(row):
     # 適切
     else:
         return 1
+    
+
+def clean_col_names(df):
+    cols = df.columns
+    new_cols = []
+    for col in cols:
+        new_col = re.sub(r"[^A-Za-z0-9_]+", "", col)
+        new_cols.append(new_col)
+    df.columns = new_cols
+    return df

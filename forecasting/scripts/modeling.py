@@ -72,7 +72,7 @@ lgb_model = lgb.LGBMRegressor(
     random_state=42,
     objective="regression",
     learning_rate=0.05,
-    n_estimators=100, 
+    n_estimators=100,
 )
 
 # モデルの訓練
@@ -98,3 +98,4 @@ y_pred_class = np.digitize(y_pred_reg, bins=thresholds)
 # 評価指標の準備
 qwk = cohen_kappa_score(y_test, y_pred_class, weights="quadratic")
 acc = accuracy_score(y_test, y_pred_class)
+print(f"QWK: {qwk:.4f}, Accuracy: {acc:.4f}")

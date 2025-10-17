@@ -16,7 +16,7 @@ from other_function import (
 warnings.filterwarnings("ignore")
 
 
-def static_preprocessing(df):
+def static_preprocessing():
     """静的データ前処理関数"""
     json_path = "../../common_data/static.json"
     df = json_data_load(json_path)
@@ -51,7 +51,8 @@ def static_preprocessing(df):
     )
 
     ward_counts_with_area["station_density"] = (
-        ward_counts_with_area["station_count"] / ward_counts_with_area["area_km2"]
+        ward_counts_with_area["station_count"]
+        / ward_counts_with_area["area_km2"]
     )
 
     bins = [0, 2.0, 4.0, ward_counts_with_area["station_density"].max()]
@@ -82,7 +83,7 @@ def static_preprocessing(df):
     return df
 
 
-def dynamic_preprocessing(df):
+def dynamic_preprocessing():
     """動的データ前処理関数"""
     df = json_data_load("../../common_data/dynamic.json")
 
@@ -106,6 +107,7 @@ def dynamic_preprocessing(df):
 
 def weather_preprocessing(df):
     """気象データ前処理関数"""
+    df = pd.read_csv("../../common_data/weather.csv")
     df.columns = [
         "_".join([str(c) for c in col if str(c) != "nan"]).strip()
         for col in df.columns.values
@@ -149,8 +151,8 @@ def weather_preprocessing(df):
 
 def df_merge():
     """データフレームの結合関数"""
-    static_df = static_preprocessing(pd.DataFrame())
-    dynamic_df = dynamic_preprocessing(pd.DataFrame())
+    static_df = static_preprocessing()
+    dynamic_df = dynamic_preprocessing()
     weather_df = weather_preprocessing(
         pd.read_csv("../../common_data/weather.csv")
     )
@@ -218,7 +220,7 @@ def df_fe(df):
 
     # 純需要
     df["net_demand"] = df["rental"] - df["return"]
-    
+
     # 閾値の設定
     theta_ratio = 0.1
     df["theta"] = df["vehicle_capacity_numeric"] * theta_ratio

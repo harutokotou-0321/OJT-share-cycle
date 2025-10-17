@@ -1,0 +1,17 @@
+2025-09-12 14:58:30,454 - INFO - commit id: 3a2abb59fde72f985df027c8bb1ec1e571973a7b
+2025-09-12 14:58:30,455 - INFO - username: harutokotou-0321
+2025-09-12 14:58:30,458 - INFO - OS information: 
+
+	OS: Darwin 23.6.0
+	Processor: arm
+	Machine: arm64
+	Node: kotounoMacBook-Air.local
+	Python Version: 3.13.7
+
+2025-09-12 14:58:30,654 - INFO - pip3 list:
+
+Package Version
+------- -------
+numpy   2.3.3
+pip     25.2
+

@@ -40,7 +40,7 @@ def json_data_load(json_path):
 
     with open(json_path, "r", encoding="utf-8") as f:
         df = json.load(f)
-    
+
     df = df["data"]["stations"]
 
     return df

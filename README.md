@@ -27,7 +27,8 @@ OJT用のシェアサイクル需要予測・最適化プロジェクトを管�
 ├── optimization
 ├── utils/
 │   ├── preprocessing.py →データロード・前処理用関数
-│   └── result.py →評価・図
+│   ├── result.py →評価・図
+│   └── other_function.py →その他関数
 ├── venv
 ├── .gitignore
 ├── README.md

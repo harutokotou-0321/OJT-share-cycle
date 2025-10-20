@@ -1,13 +1,10 @@
 import warnings
 
-import numpy as np
 import lightgbm as lgb
-from sklearn.model_selection import train_test_split
+import numpy as np
 from sklearn.metrics import accuracy_score, cohen_kappa_score
-from scipy.optimize import minimize
-# データ前処理関数をインポート(静的, 動的, 気象のデータを総合的に結合し、前処理を施す関数を用意)
+from sklearn.model_selection import train_test_split
 from utils.preprocessing import df_merge, clean_col_names, df_fe
-
 from log_setter.set_up import set_logging
 
 # 警告無視
@@ -16,23 +13,8 @@ warnings.filterwarnings("ignore")
 # ロギング用意
 logger = set_logging("../output/modeling.log")
 
-
-# 閾値最適化関数
-def optimize_thresholds(y_true, y_pred):
-    def func(thresholds):
-        thresholds = sorted(thresholds)
-        y_pred_class = np.digitize(y_pred, bins=thresholds)
-
-        return -cohen_kappa_score(y_true, y_pred_class, weights="quadratic")
-
-    initial_thresholds = [0.5, 1.5]
-    result = minimize(func, initial_thresholds, method="Nelder-Mead")
-    return sorted(result.x)
-
-
-# データロード
+# データロード及び特徴量エンジニアリング
 df = df_merge()
-
 df = df_fe(df)
 
 # デフォルト削除対象カラムを追加
@@ -45,9 +27,8 @@ categorical_features = ["parking_hoop", "is_charging_station",
                         "is_returning", "density_category_custom",
                         "facility_type", "day_of_week"]
 
-# カラム削除
+# カラム整理
 X = df.drop(default_del_columns, axis=1)
-
 X = clean_col_names(X)
 
 # 目的変数
@@ -87,11 +68,10 @@ lgb_model.fit(
     eval_metric="rmse"
 )
 
-
 # 連続値予測
 y_pred_reg = lgb_model.predict(X_test)
 
-thresholds = optimize_thresholds(y_test, y_pred_reg)
+thresholds = [0.5, 1.5]
 # クラス予測
 y_pred_class = np.digitize(y_pred_reg, bins=thresholds)
 

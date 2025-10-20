@@ -57,7 +57,7 @@ def categorize_demand(row):
     # 適切
     else:
         return 1
-    
+
 
 def clean_col_names(df):
     cols = df.columns

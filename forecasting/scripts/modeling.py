@@ -2,7 +2,7 @@ import warnings
 
 import lightgbm as lgb
 import numpy as np
-from sklearn.metrics import accuracy_score, cohen_kappa_score
+from sklearn.metrics import cohen_kappa_score, mean_absolute_error
 from sklearn.model_selection import train_test_split
 from utils.preprocessing import df_merge, clean_col_names, df_fe
 from log_setter.set_up import set_logging
@@ -14,6 +14,7 @@ warnings.filterwarnings("ignore")
 logger = set_logging("../output/modeling.log")
 
 # データロード及び特徴量エンジニアリング
+logger.info("Start merge and feature engineering process")
 df = df_merge()
 df = df_fe(df)
 
@@ -30,9 +31,11 @@ categorical_features = ["parking_hoop", "is_charging_station",
 # カラム整理
 X = df.drop(default_del_columns, axis=1)
 X = clean_col_names(X)
+logger.info(f"Features used for modeling: {X.columns.tolist()}")
 
 # 目的変数
 y = df["y_class"]
+logger.info(f"Shape of X: {X.shape}, Shape of y: {y.shape}")
 
 # 訓練データとテストデータに分割
 X_train, X_test, y_train, y_test = train_test_split(
@@ -43,7 +46,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 class_weights = y_train.value_counts(normalize=True)
 class_weights = 1 / class_weights  # 出力頻度の逆数で重みを作成
 class_weights = class_weights / class_weights.mean()  # 正規化して平均1に
-print(class_weights)
+logger.info(f"Class weights: {class_weights.to_dict()}")
 
 sample_weight = y_train.map(class_weights)
 
@@ -55,6 +58,7 @@ lgb_model = lgb.LGBMRegressor(
     learning_rate=0.05,
     n_estimators=100,
 )
+logger.info(f"Initialized LightGBM model: {lgb_model}")
 
 # モデルの訓練
 categorical_features_cleaned = [
@@ -67,15 +71,19 @@ lgb_model.fit(
     sample_weight=sample_weight,
     eval_metric="rmse"
 )
+logger.info("Model training completed")
 
 # 連続値予測
 y_pred_reg = lgb_model.predict(X_test)
+logger.info("Continuous value prediction complete")
 
 thresholds = [0.5, 1.5]
 # クラス予測
 y_pred_class = np.digitize(y_pred_reg, bins=thresholds)
+logger.info("Class prediction complete")
 
 # 評価指標の準備
 qwk = cohen_kappa_score(y_test, y_pred_class, weights="quadratic")
-acc = accuracy_score(y_test, y_pred_class)
-print(f"QWK: {qwk:.4f}, Accuracy: {acc:.4f}")
+mae = mean_absolute_error(y_test, y_pred_reg)
+print(f"QWK: {qwk:.4f}, MAE: {mae:.4f}")
+logger.info(f"QWK: {qwk:.4f}, MAE: {mae:.4f}")

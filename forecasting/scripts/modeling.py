@@ -2,6 +2,7 @@ import warnings
 
 import lightgbm as lgb
 import numpy as np
+import datetime as dt
 from sklearn.metrics import cohen_kappa_score, mean_absolute_error
 from sklearn.model_selection import train_test_split
 from utils.preprocessing import df_merge, clean_col_names, df_fe
@@ -13,10 +14,12 @@ warnings.filterwarnings("ignore")
 # ロギング用意
 logger = set_logging("../output/modeling.log")
 
+start_time = dt.datetime.now()
+
 # データロード及び特徴量エンジニアリング
-logger.info("Start merge and feature engineering process")
 df = df_merge()
 df = df_fe(df)
+logger.info(f"Data form is here:\n{df}")
 
 # デフォルト削除対象カラムを追加
 default_del_columns = ["y_class", "net_demand", "theta",
@@ -58,7 +61,7 @@ lgb_model = lgb.LGBMRegressor(
     learning_rate=0.05,
     n_estimators=100,
 )
-logger.info(f"Initialized LightGBM model: {lgb_model}")
+logger.info(f"Initialized LightGBM model:\n{lgb_model}")
 
 # モデルの訓練
 categorical_features_cleaned = [
@@ -71,19 +74,20 @@ lgb_model.fit(
     sample_weight=sample_weight,
     eval_metric="rmse"
 )
-logger.info("Model training completed")
 
 # 連続値予測
 y_pred_reg = lgb_model.predict(X_test)
-logger.info("Continuous value prediction complete")
 
 thresholds = [0.5, 1.5]
 # クラス予測
 y_pred_class = np.digitize(y_pred_reg, bins=thresholds)
-logger.info("Class prediction complete")
+logger.info(f"Class predict is here:\n{y_pred_class}")
 
 # 評価指標の準備
 qwk = cohen_kappa_score(y_test, y_pred_class, weights="quadratic")
 mae = mean_absolute_error(y_test, y_pred_reg)
-print(f"QWK: {qwk:.4f}, MAE: {mae:.4f}")
 logger.info(f"QWK: {qwk:.4f}, MAE: {mae:.4f}")
+
+end_time = dt.datetime.now()
+process_time = end_time - start_time
+logger.info(f"Total processing time: {process_time}")

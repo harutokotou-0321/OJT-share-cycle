@@ -1,15 +1,27 @@
+import json
 import warnings
+import datetime as dt
 
 import lightgbm as lgb
 import numpy as np
-import datetime as dt
+import pandas as pd
 from sklearn.metrics import cohen_kappa_score, mean_absolute_error
 from sklearn.model_selection import train_test_split
+
 from utils.preprocessing import df_merge, clean_col_names, df_fe
 from log_setter.set_up import set_logging
 
+# パラメータを取得
+with open("../../config/default/LightGBM.json", "r") as f:
+    params = json.load(f)
+params = params["params"]
+
 # 警告無視
 warnings.filterwarnings("ignore")
+
+# pandas設定
+pd.set_option("display.max_columns", 30)
+
 
 # ロギング用意
 logger = set_logging("../output/modeling.log")
@@ -23,7 +35,8 @@ logger.info(f"Data form is here:\n{df}")
 
 # デフォルト削除対象カラムを追加
 default_del_columns = ["y_class", "net_demand", "theta",
-                       "delta", "rental", "return", "station_id"]
+                       "delta", "rental", "return",
+                       "station_id", "datetime"]
 
 # カテゴリカル特徴量を指定
 categorical_features = ["parking_hoop", "is_charging_station",
@@ -32,8 +45,17 @@ categorical_features = ["parking_hoop", "is_charging_station",
                         "facility_type", "day_of_week"]
 
 # カラム整理
+# 重複したカラムを削除
+df = df.loc[:, ~df.columns.duplicated()]
 X = df.drop(default_del_columns, axis=1)
 X = clean_col_names(X)
+
+# 空白になっているカラムを削除
+columns_to_drop = [col for col in X.columns if col == '']
+
+if columns_to_drop:
+    X = X.drop(columns=columns_to_drop)
+
 logger.info(f"Features used for modeling: {X.columns.tolist()}")
 
 # 目的変数
@@ -55,28 +77,50 @@ sample_weight = y_train.map(class_weights)
 
 
 # LightGBM分類器の初期化
-lgb_model = lgb.LGBMRegressor(
-    random_state=42,
-    objective="regression",
-    learning_rate=0.05,
-    n_estimators=100,
-)
+lgb_model = lgb.LGBMRegressor(**params, importance_type="gain")
 logger.info(f"Initialized LightGBM model:\n{lgb_model}")
 
 # モデルの訓練
 categorical_features_cleaned = [
     col for col in categorical_features if col in X.columns
 ]
+
 lgb_model.fit(
     X_train, y_train,
     eval_set=[(X_test, y_test)],
     categorical_feature=categorical_features_cleaned,
     sample_weight=sample_weight,
-    eval_metric="rmse"
+)
+
+# 特徴両重要度を算出
+importance = lgb_model.feature_importances_
+feature_importance_df = pd.DataFrame(
+    {"feature": X_train.columns, "importance": importance})
+feature_importance_df = feature_importance_df.sort_values(
+    by="importance", ascending=False)
+logger.info(f"Feature importance is here:\n{feature_importance_df}")
+
+# 一定の閾値を元に特徴量を選択
+selected_features = feature_importance_df[
+    feature_importance_df["importance"] > 5.0]["feature"].tolist()
+X_selected = X[selected_features]
+
+# 再）訓練データとテストデータに分割
+X_train, X_test, y_train, y_test = train_test_split(
+    X_selected, y, test_size=0.2, random_state=42, stratify=y
+)
+print(X_train.columns)
+
+# 重み付けを元に再学習
+retrained_model = lgb.LGBMRegressor(**params)
+retrained_model.fit(X_train, y_train,
+                    eval_set=[(X_test, y_test)],
+                    # categorical_feature=categorical_features_cleaned,
+                    sample_weight=sample_weight
 )
 
 # 連続値予測
-y_pred_reg = lgb_model.predict(X_test)
+y_pred_reg = retrained_model.predict(X_test)
 
 thresholds = [0.5, 1.5]
 # クラス予測

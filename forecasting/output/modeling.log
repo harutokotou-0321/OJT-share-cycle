@@ -1,17 +1,176 @@
-2025-09-12 14:58:30,454 - INFO - commit id: 3a2abb59fde72f985df027c8bb1ec1e571973a7b
-2025-09-12 14:58:30,455 - INFO - username: harutokotou-0321
-2025-09-12 14:58:30,458 - INFO - OS information: 
+2025-10-29 15:38:03,563 - INFO - commit id: 2490d015018de3726cda3f8ba222d0b71be74a73
+2025-10-29 15:38:03,564 - INFO - username: harutokotou-0321
+2025-10-29 15:38:03,569 - INFO - OS information: 
 
 	OS: Darwin 23.6.0
 	Processor: arm
 	Machine: arm64
 	Node: kotounoMacBook-Air.local
-	Python Version: 3.13.7
+	Python Version: 3.13.9
 
-2025-09-12 14:58:30,654 - INFO - pip3 list:
+2025-10-29 15:38:03,822 - INFO - pip3 list:
 
-Package Version
-------- -------
-numpy   2.3.3
-pip     25.2
+Package             Version
+------------------- -----------
+contourpy           1.3.3
+cycler              0.12.1
+fonttools           4.60.1
+holidays            0.82
+japanize-matplotlib 1.1.3
+joblib              1.5.2
+kiwisolver          1.4.9
+lightgbm            4.6.0
+matplotlib          3.10.7
+numpy               2.3.3
+packaging           25.0
+pandas              2.3.3
+pillow              11.3.0
+pip                 25.2
+pyparsing           3.2.5
+python-dateutil     2.9.0.post0
+pytz                2025.2
+scikit-learn        1.7.2
+scipy               1.16.2
+six                 1.17.0
+threadpoolctl       3.6.0
+tzdata              2025.2
+xgboost             3.0.5
 
+2025-10-29 15:38:04,014 - INFO - Data form is here:
+            lat         lon station_id  parking_hoop  is_charging_station  \
+2784  35.720315  139.749809      10144         False                False   
+2785  35.720315  139.749809      10144         False                False   
+2786  35.720315  139.749809      10144         False                False   
+2787  35.738405  139.703692      10148         False                False   
+2788  35.738405  139.703692      10148         False                False   
+...         ...         ...        ...           ...                  ...   
+2779  35.768564  139.868591       9948         False                False   
+2780  35.768564  139.868591       9948         False                False   
+2781  35.715317  139.858239       9949         False                False   
+2782  35.715317  139.858239       9949         False                False   
+2783  35.715317  139.858239       9949         False                False   
+
+      ward_count  vehicle_capacity_numeric  station_count  station_density  \
+2784          16                         6             16         1.417183   
+2785          16                         6             16         1.417183   
+2786          16                         6             16         1.417183   
+2787         230                         5            230         7.138423   
+2788         230                         5            230         7.138423   
+...          ...                       ...            ...              ...   
+2779         124                         5            124         3.563218   
+2780         124                         5            124         3.563218   
+2781         124                        10            124         3.563218   
+2782         124                        10            124         3.563218   
+2783         124                        10            124         3.563218   
+
+     density_category_custom  facility_type  is_renting  is_installed  \
+2784                       0              2           1             1   
+2785                       0              2           1             1   
+2786                       0              2           1             1   
+2787                       2              8           1             1   
+2788                       2              8           1             1   
+...                      ...            ...         ...           ...   
+2779                       1              7           1             1   
+2780                       1              7           1             1   
+2781                       1              7           1             1   
+2782                       1              7           1             1   
+2783                       1              7           1             1   
+
+      is_returning  num_bikes_available  ...  wind_speed_ms  wind_direction  \
+2784             1                  2.0  ...            2.4           337.5   
+2785             1                  1.0  ...            2.3           315.0   
+2786             1                  4.0  ...            2.9             0.0   
+2787             0                  5.0  ...            2.4           337.5   
+2788             0                  5.0  ...            2.3           315.0   
+...            ...                  ...  ...            ...             ...   
+2779             0                  5.0  ...            2.3           315.0   
+2780             0                  5.0  ...            2.9             0.0   
+2781             0                 10.0  ...            2.4           337.5   
+2782             0                 10.0  ...            2.3           315.0   
+2783             1                  7.0  ...            2.9             0.0   
+
+      weather_code  bike_ratio  dock_ratio  is_empty  is_full  \
+2784            99    0.333333    0.666667     False    False   
+2785            99    0.166667    0.833333     False    False   
+2786            99    0.666667    0.333333     False    False   
+2787            99    1.000000    0.000000     False     True   
+2788            99    1.000000    0.000000     False     True   
+...            ...         ...         ...       ...      ...   
+2779            99    1.000000    0.000000     False     True   
+2780            99    1.000000    0.000000     False     True   
+2781            99    1.000000    0.000000     False     True   
+2782            99    1.000000    0.000000     False     True   
+2783            99    0.700000    0.300000     False    False   
+
+                datetime  day_of_week  delta  rental  return  net_demand  \
+2784 2025-10-24 04:00:00            4    2.0     0.0     2.0        -2.0   
+2785 2025-10-24 08:00:00            4   -1.0     1.0     0.0         1.0   
+2786 2025-10-24 11:00:00            4    3.0     0.0     3.0        -3.0   
+2787 2025-10-24 04:00:00            4    5.0     0.0     5.0        -5.0   
+2788 2025-10-24 08:00:00            4    0.0     0.0     0.0         0.0   
+...                  ...          ...    ...     ...     ...         ...   
+2779 2025-10-24 08:00:00            4    1.0     0.0     1.0        -1.0   
+2780 2025-10-24 11:00:00            4    0.0     0.0     0.0         0.0   
+2781 2025-10-24 04:00:00            4   10.0     0.0    10.0       -10.0   
+2782 2025-10-24 08:00:00            4    0.0     0.0     0.0         0.0   
+2783 2025-10-24 11:00:00            4   -3.0     3.0     0.0         3.0   
+
+      theta y_class  
+2784    0.6       2  
+2785    0.6       0  
+2786    0.6       2  
+2787    0.5       2  
+2788    0.5       1  
+...     ...     ...  
+2779    0.5       2  
+2780    0.5       1  
+2781    1.0       2  
+2782    1.0       1  
+2783    1.0       0  
+
+[6306 rows x 37 columns]
+2025-10-29 15:38:04,015 - INFO - Features used for modeling: ['lat', 'lon', 'parking_hoop', 'is_charging_station', 'ward_count', 'vehicle_capacity_numeric', 'station_count', 'station_density', 'density_category_custom', 'facility_type', 'is_renting', 'is_installed', 'is_returning', 'num_bikes_available', 'num_docks_available', 'month', 'date', 'hours', 'year', 'precipitation_mm', 'temperature_c', 'wind_speed_ms', 'wind_direction', 'weather_code', 'bike_ratio', 'dock_ratio', 'is_empty', 'is_full', 'day_of_week']
+2025-10-29 15:38:04,016 - INFO - Shape of X: (6306, 29), Shape of y: (6306,)
+2025-10-29 15:38:04,020 - INFO - Class weights: {2: 0.621454044030241, 1: 0.6634891350863011, 0: 1.7150568208834576}
+2025-10-29 15:38:04,021 - INFO - Initialized LightGBM model:
+LGBMRegressor(colsample_bytree=0.9572861072979278, feature_fraction=0.8,
+              importance_type='gain', learning_rate=0.22258553726364355,
+              max_depth=7, min_child_samples=41, min_split_gain=0.3,
+              objective='regression', reg_alpha=0.002051074855007414,
+              reg_lambda=0.11025266080652221, subsample=0.7047268164575428,
+              subsample_freq=6, verbosity=-1)
+2025-10-29 15:38:04,145 - INFO - Feature importance is here:
+                     feature   importance
+17                     hours  1391.618950
+25                dock_ratio   450.307882
+24                bike_ratio   420.878906
+0                        lat   271.666525
+1                        lon   263.584351
+20             temperature_c   141.253852
+5   vehicle_capacity_numeric    81.036387
+14       num_docks_available    70.964145
+7            station_density    51.898328
+9              facility_type    51.741633
+4                 ward_count    46.085316
+13       num_bikes_available    38.000647
+22            wind_direction    29.679549
+21             wind_speed_ms    15.084601
+8    density_category_custom     9.939390
+6              station_count     6.708334
+10                is_renting     2.122124
+12              is_returning     0.995406
+23              weather_code     0.000000
+27                   is_full     0.000000
+26                  is_empty     0.000000
+2               parking_hoop     0.000000
+3        is_charging_station     0.000000
+18                      year     0.000000
+19          precipitation_mm     0.000000
+16                      date     0.000000
+15                     month     0.000000
+11              is_installed     0.000000
+28               day_of_week     0.000000
+2025-10-29 15:38:04,242 - INFO - Class predict is here:
+[1 1 1 ... 2 1 0]
+2025-10-29 15:38:04,244 - INFO - QWK: 0.5703, MAE: 0.4259
+2025-10-29 15:38:04,244 - INFO - Total processing time: 0:00:00.421807

@@ -1,0 +1,18 @@
+{
+  "params": {
+    "objective": "regression",
+    "verbosity": -1,
+    "boosting_type": "gbdt",
+    "colsample_bytree": 0.9572861072979278,
+    "learning_rate": 0.22258553726364354,
+    "max_depth": 7,
+    "min_child_samples": 41,
+    "num_leaves": 31,
+    "reg_alpha": 0.002051074855007414,
+    "reg_lambda": 0.11025266080652221,
+    "subsample": 0.7047268164575428,
+    "subsample_freq": 6,
+    "feature_fraction": 0.8,
+    "min_split_gain": 0.3
+  }
+}

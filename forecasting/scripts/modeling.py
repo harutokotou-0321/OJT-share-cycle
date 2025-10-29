@@ -92,35 +92,8 @@ lgb_model.fit(
     sample_weight=sample_weight,
 )
 
-# 特徴両重要度を算出
-importance = lgb_model.feature_importances_
-feature_importance_df = pd.DataFrame(
-    {"feature": X_train.columns, "importance": importance})
-feature_importance_df = feature_importance_df.sort_values(
-    by="importance", ascending=False)
-logger.info(f"Feature importance is here:\n{feature_importance_df}")
-
-# 一定の閾値を元に特徴量を選択
-selected_features = feature_importance_df[
-    feature_importance_df["importance"] > 5.0]["feature"].tolist()
-X_selected = X[selected_features]
-
-# 再）訓練データとテストデータに分割
-X_train, X_test, y_train, y_test = train_test_split(
-    X_selected, y, test_size=0.2, random_state=42, stratify=y
-)
-print(X_train.columns)
-
-# 重み付けを元に再学習
-retrained_model = lgb.LGBMRegressor(**params)
-retrained_model.fit(X_train, y_train,
-                    eval_set=[(X_test, y_test)],
-                    # categorical_feature=categorical_features_cleaned,
-                    sample_weight=sample_weight
-)
-
 # 連続値予測
-y_pred_reg = retrained_model.predict(X_test)
+y_pred_reg = lgb_model.predict(X_test)
 
 thresholds = [0.5, 1.5]
 # クラス予測

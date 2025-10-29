@@ -1,16 +1,11 @@
 import os
 import re
-import warnings
 
 import numpy as np
 import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
 from .other_function import json_data_load
-
-
-# 警告無視
-warnings.filterwarnings("ignore")
 
 
 # カテゴリ辞書をクラス分けする関数

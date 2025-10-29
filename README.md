@@ -15,20 +15,19 @@ OJT用のシェアサイクル需要予測・最適化プロジェクトを管�
 ```
 .
 ├── common_data/
-│   ├── station_information.json
-│   ├── station_status.json
+│   ├── static.json
+│   ├── odpt_20251024.csv
 │   └── weather.csv
-├── config →yaml/json/
+├── config
 │   ├── default
-│   └── experiment →defaultから変更したもの
+│   └── experiment
 ├── forecasting/
 │   └── modeling.py
 ├── log_setter
-├── optimization
 ├── utils/
-│   ├── preprocessing.py →データロード・前処理用関数
-│   ├── result.py →評価・図
-│   └── other_function.py →その他関数
+│   ├── preprocessing.py
+│   ├── result.py
+│   └── other_function.py
 ├── venv
 ├── .gitignore
 ├── README.md

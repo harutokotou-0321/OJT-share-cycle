@@ -1,5 +1,6 @@
 import json
 
+
 def json_data_load(json_path):
     """jsonファイルを読み込む関数"""
 
